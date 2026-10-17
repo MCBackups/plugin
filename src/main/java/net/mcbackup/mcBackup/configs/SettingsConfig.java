@@ -4,6 +4,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import services.plasma.pLibraries.util.config.creator.ConfigCreator;
 import services.plasma.pLibraries.util.config.creator.annotation.Path;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class SettingsConfig extends ConfigCreator {
 
     public static SettingsConfig INSTANCE;
@@ -14,6 +18,14 @@ public class SettingsConfig extends ConfigCreator {
     @Path(id = "backup.interval")
     public static String BACKUP_INTERVAL = "3h";
 
+    @Path(id = "backup.folders")
+    public static List<String> BACKUP_FOLDERS = Arrays.asList(
+            "plugins",
+            "world",
+            "world_nether",
+            "world_the_end"
+    );
+
     @Path(id = "backup.provider.mcbackup.enabled")
     public static String BACKUP_PROVIDER_MCBACKUP_ENABLED = "true";
 
@@ -21,7 +33,14 @@ public class SettingsConfig extends ConfigCreator {
     public static String BACKUP_PROVIDER_MCBACKUP_URL = "https://api.mcbackup.net";
 
     @Path(id = "backup.provider.mcbackup.api-key")
-    public static String BACKUP_STORAGE_USERNAME = "mcbkp_xxxxxxxxx";
+    public static String BACKUP_PROVIDER_MCBACKUP_API_KEY = "mcbkp_xxxxxxxxx";
+
+    @Path(id = "backup.provider.googledrive.enabled")
+    public static boolean BACKUP_PROVIDER_GOOGLEDRIVE_ENABLED = false;
+
+    @Path(id = "backup.provider.googledrive.refresh-token")
+    public static String BACKUP_PROVIDER_GOOGLEDRIVE_REFRESH_TOKEN = "this-will-automatically-generate";
+
 
 
     public SettingsConfig(JavaPlugin plugin) {

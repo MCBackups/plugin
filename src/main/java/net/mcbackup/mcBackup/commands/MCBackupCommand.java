@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.mcbackup.mcBackup.configs.LanguageConfig;
 import net.mcbackup.mcBackup.configs.SettingsConfig;
+import net.mcbackup.mcBackup.authentication.DriveAuthentication;
 import org.bukkit.command.CommandSender;
 import services.plasma.pLibraries.util.CC;
 
@@ -25,6 +26,13 @@ public class MCBackupCommand extends BaseCommand {
         SettingsConfig.INSTANCE.reload();
 
         sender.sendMessage(CC.translate(LanguageConfig.COMMANDS_MCBACKUP_RELOADED));
+    }
+
+    @Subcommand("auth")
+    @CommandPermission("mcbackup.command.mcbackup.auth")
+    @Description("Authenticate your MCBackup account")
+    public void auth(CommandSender sender) {
+        new DriveAuthentication().authenticate(sender);
     }
 
 }
