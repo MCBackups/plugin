@@ -1,0 +1,10 @@
+name: MCBackup
+description: $description
+version: '${version}'
+
+main: net.mcbackup.mcBackup.MCBackup
+api-version: '1.20'
+load: POSTWORLD
+
+authors: [ MCBackup Development Team ]
+website: https://mcbackup.net
