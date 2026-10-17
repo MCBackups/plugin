@@ -108,7 +108,8 @@ public class DriveBackupTask {
 
         List<Path> foldersToBackup = new ArrayList<>();
         for (String folderName : folderNamesToBackup) {
-            Path folderPath = MCBackup.getInstance().getDataFolder().toPath().getParent().getParent().resolve(folderName);
+            Path serverRoot = MCBackup.getInstance().getServer().getWorldContainer().toPath().toAbsolutePath().normalize();
+            Path folderPath = serverRoot.resolve(folderName);
             if (Files.exists(folderPath)) {
                 foldersToBackup.add(folderPath);
             } else {
