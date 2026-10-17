@@ -28,10 +28,11 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class DriveBackupTask {
+public class DriveBackupTask extends BackupTask {
     public Drive drive = buildDrive();
 
     public DriveBackupTask() throws GeneralSecurityException, IOException {
+        super("Google Drive");
     }
 
     private Drive buildDrive() throws IOException, GeneralSecurityException {
@@ -71,7 +72,7 @@ public class DriveBackupTask {
         Path zipAbsolute = zipFile.toAbsolutePath();
 
         try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipFile))) {
-            zos.setLevel(Deflater.BEST_SPEED); // region files are already compressed, so higher levels just burn CPU
+            zos.setLevel(Deflater.BEST_SPEED);
 
             for (Path sourceDir : sourceDirs) {
                 Path base = sourceDir.toAbsolutePath().getParent();
@@ -79,12 +80,10 @@ public class DriveBackupTask {
                 Files.walkFileTree(sourceDir, new SimpleFileVisitor<>() {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        // Skip the lock file and the archive itself if it lives inside a source dir
                         if (file.getFileName().toString().equals("session.lock") || file.toAbsolutePath().equals(zipAbsolute)) {
                             return FileVisitResult.CONTINUE;
                         }
 
-                        // Zip entries must use forward slashes, even on Windows
                         String entryName = base.relativize(file.toAbsolutePath()).toString().replace('\\', '/');
 
                         ZipEntry entry = new ZipEntry(entryName);
@@ -103,6 +102,7 @@ public class DriveBackupTask {
 
     }
 
+    @Override
     public void uploadBackup() throws IOException {
         List<String> folderNamesToBackup = new ArrayList<>(SettingsConfig.BACKUP_FOLDERS);
 
@@ -132,8 +132,8 @@ public class DriveBackupTask {
         Drive.Files.Create create = drive.files().create(meta, new FileContent("application/zip", zip.toFile()))
                 .setFields("id");
         MediaHttpUploader uploader = create.getMediaHttpUploader();
-        uploader.setDirectUploadEnabled(false);                         // resumable
-        uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE * 40); // 10 MiB, must be a multiple of 256 KiB
+        uploader.setDirectUploadEnabled(false);
+        uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE * 40);
         uploader.setProgressListener(u -> MCBackup.getInstance().getLogger().info("Upload " + (int) (u.getProgress() * 100) + "%"));
         String fileId = create.execute().getId();
     }

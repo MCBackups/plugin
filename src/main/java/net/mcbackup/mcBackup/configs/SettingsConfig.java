@@ -27,10 +27,7 @@ public class SettingsConfig extends ConfigCreator {
     );
 
     @Path(id = "backup.provider.mcbackup.enabled")
-    public static String BACKUP_PROVIDER_MCBACKUP_ENABLED = "true";
-
-    @Path(id = "backup.provider.mcbackup.url")
-    public static String BACKUP_PROVIDER_MCBACKUP_URL = "https://api.mcbackup.net";
+    public static boolean BACKUP_PROVIDER_MCBACKUP_ENABLED = true;
 
     @Path(id = "backup.provider.mcbackup.api-key")
     public static String BACKUP_PROVIDER_MCBACKUP_API_KEY = "mcbkp_xxxxxxxxx";

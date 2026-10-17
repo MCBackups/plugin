@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.File;
+import java.io.IOException;
 
 @AllArgsConstructor
 @Getter
@@ -13,6 +13,6 @@ public abstract class BackupTask {
 
     private String name;
 
-    public abstract void uploadBackup(File file);
+    public abstract void uploadBackup() throws IOException;
 
 }

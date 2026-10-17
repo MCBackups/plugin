@@ -51,7 +51,6 @@ public class MCBackupCommand extends BaseCommand {
             try {
                 DriveBackupTask backupTask = new DriveBackupTask();
                 backupTask.uploadBackup();
-                sender.sendMessage("backing up...");
             } catch (GeneralSecurityException | IOException e) {
                 throw new RuntimeException(e);
             }
