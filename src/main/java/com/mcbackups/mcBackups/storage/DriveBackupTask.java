@@ -52,7 +52,7 @@ public class DriveBackupTask extends BackupTask {
                 .setQ("name = 'MCBackup' and mimeType = '" + folderMime + "' and trashed = false")
                 .setFields("files(id)").execute().getFiles();
 
-        return !found.isEmpty() ? found.get(0).getId()
+        return !found.isEmpty() ? found.getFirst().getId()
                 : drive.files().create(new File().setName("MCBackup").setMimeType(folderMime))
                   .setFields("id").execute().getId();
     }

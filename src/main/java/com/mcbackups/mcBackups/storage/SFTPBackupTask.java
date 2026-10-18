@@ -2,6 +2,7 @@ package com.mcbackups.mcBackups.storage;
 
 import com.mcbackups.mcBackups.MCBackups;
 import com.mcbackups.mcBackups.configs.SettingsConfig;
+import com.mcbackups.mcBackups.utils.SFTPHostKeyVerifier;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.StreamCopier;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -10,12 +11,10 @@ import net.schmizz.sshj.userauth.password.PasswordUtils;
 import net.schmizz.sshj.xfer.FileSystemFile;
 import net.schmizz.sshj.xfer.TransferListener;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SFTPBackupTask extends BackupTask {
 
@@ -51,7 +50,7 @@ public class SFTPBackupTask extends BackupTask {
             ssh.setConnectTimeout(15_000);
             ssh.setTimeout(60_000);
 
-//            ssh.addHostKeyVerifier(hostFingerprint);
+            ssh.addHostKeyVerifier(new SFTPHostKeyVerifier(SettingsConfig.BACKUP_PROVIDER_SFTP_HOST_FINGERPRINT));
 
             ssh.connect(host, port);
 
@@ -70,9 +69,6 @@ public class SFTPBackupTask extends BackupTask {
             try (SFTPClient sftp = ssh.newSFTPClient()) {
                 sftp.mkdirs(remoteDir);
 
-                sftp.put(new FileSystemFile(zip.toFile()), remoteTemp);
-                sftp.rename(remoteTemp, remoteFinal);
-
                 sftp.getFileTransfer().setTransferListener(new TransferListener() {
                     @Override
                     public TransferListener directory(String name) {
@@ -81,11 +77,24 @@ public class SFTPBackupTask extends BackupTask {
 
                     @Override
                     public StreamCopier.Listener file(String name, long size) {
-                        return transferred -> MCBackups.getInstance().getLogger().info("SFTP Backup: " + (transferred * 100 / size) + "%");
+                        AtomicInteger lastLogged = new AtomicInteger();
+                        return transferred -> {
+                            int step = (int) (transferred * 100 / Math.max(size, 1)) / 10 * 10;
+                            if (step > lastLogged.get()) {
+                                lastLogged.set(step);
+                                MCBackups.getInstance().getLogger().info("SFTP Backup: " + step + "%");
+                            }
+                        };
                     }
                 });
 
+                sftp.put(new FileSystemFile(zip.toFile()), remoteTemp);
+                sftp.rename(remoteTemp, remoteFinal);
             }
+
+            MCBackups.getInstance().getLogger().info("SFTP upload complete!");
+        } finally {
+            deleteZipArchive(zip);
         }
 
     }

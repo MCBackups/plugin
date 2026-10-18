@@ -54,6 +54,9 @@ public class SettingsConfig extends ConfigCreator {
     @Path(id = "backup.provider.sftp.port")
     public static int BACKUP_PROVIDER_SFTP_PORT = 22;
 
+    @Path(id = "backup.provider.sftp.host-fingerprint")
+    public static String BACKUP_PROVIDER_SFTP_HOST_FINGERPRINT = "";
+
     @Path(id = "backup.provider.sftp.auth.username")
     public static String BACKUP_PROVIDER_SFTP_USERNAME = "username";
 
@@ -62,9 +65,6 @@ public class SettingsConfig extends ConfigCreator {
 
     @Path(id = "backup.provider.sftp.auth.password.password")
     public static String BACKUP_PROVIDER_SFTP_AUTH_PASSWORD = "password";
-
-    @Path(id = "backup.provider.sftp.auth.private-key.enabled")
-    public static boolean BACKUP_PROVIDER_SFTP_PRIVATE_KEY_ENABLED = false;
 
     @Path(id = "backup.provider.sftp.auth.private-key.path")
     public static String BACKUP_PROVIDER_SFTP_AUTH_PRIVATE_KEY_PATH = "sftp/id_ed25519";
