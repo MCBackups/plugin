@@ -64,7 +64,7 @@ public class MCBackupCommand extends BaseCommand {
             try {
                 MCBackup.getBackupTask().uploadBackup();
             } catch (IOException e) {
-                sender.sendMessage(CC.translateComponent("&cThere aws an error while creating the backup! Check console for more information."));
+                sender.sendMessage(CC.translateComponent("&cThere was an error while creating the backup! Check console for more information."));
                 throw new RuntimeException(e);
             }
 
