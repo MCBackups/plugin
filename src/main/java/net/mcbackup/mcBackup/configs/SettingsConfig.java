@@ -25,6 +25,14 @@ public class SettingsConfig extends ConfigCreator {
             "world_the_end"
     );
 
+    @Path(id = "backup.ignored-folders")
+    public static List<String> BACKUP_IGNORED_FOLDERS = Arrays.asList(
+            "plugins/MCBackup",
+            "plugins/CoreProtect",
+            "plugins/squaremap",
+            "plugins/dynmap"
+    );
+
     @Path(id = "backup.provider.mcbackup.enabled")
     public static boolean BACKUP_PROVIDER_MCBACKUP_ENABLED = true;
 

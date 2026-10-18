@@ -47,6 +47,14 @@ public final class MCBackup extends JavaPlugin {
                 backupTask = new MCBackupCloudTask();
             }
 
+            if(backupTask == null) {
+                getLogger().warning("No backup provider is enabled in the config.");
+            } else {
+                getLogger().info("Backup task initialized with provider: " + backupTask.getName());
+            }
+
+        } else {
+            getLogger().warning("Backups are disabled in the config.");
         }
 
 

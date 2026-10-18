@@ -7,6 +7,7 @@ import net.mcbackup.mcBackup.MCBackup;
 import net.mcbackup.mcBackup.authentication.DriveAuthentication;
 import net.mcbackup.mcBackup.configs.LanguageConfig;
 import net.mcbackup.mcBackup.configs.SettingsConfig;
+import net.mcbackup.mcBackup.storage.DriveBackupTask;
 import org.bukkit.command.CommandSender;
 import services.plasma.pLibraries.util.CC;
 
@@ -35,16 +36,30 @@ public class MCBackupCommand extends BaseCommand {
     @CommandPermission("mcbackup.command.mcbackup.auth")
     @Description("Authenticate your Google Drive account")
     public void auth(CommandSender sender) {
-        new DriveAuthentication().authenticate(sender);
+        if(SettingsConfig.BACKUP_PROVIDER_GOOGLEDRIVE_ENABLED && MCBackup.getBackupTask() instanceof DriveBackupTask) {
+            new DriveAuthentication().authenticate(sender);
+        } else {
+            sender.sendMessage(CC.translate("&cGoogle Drive is not enabled in the config."));
+        }
+
     }
 
     @Subcommand("backup")
     @CommandPermission("mcbackup.command.mcbackup.backup")
     @Description("Create a backup of the server")
     public void backup(CommandSender sender) {
-        sender.sendMessage(CC.translate("&aStarting backup..."));
 
         MCBackup.getInstance().getServer().getScheduler().runTaskAsynchronously(MCBackup.getInstance(), () -> {
+
+            if(MCBackup.getBackupTask() == null) {
+                sender.sendMessage(CC.translateComponent("&cNo backup provider is enabled in the config."));
+                return;
+            }
+
+            if(!SettingsConfig.BACKUP_ENABLED) {
+                sender.sendMessage(CC.translateComponent("&cBackups are disabled in the config."));
+                return;
+            }
 
             try {
                 MCBackup.getBackupTask().uploadBackup();
