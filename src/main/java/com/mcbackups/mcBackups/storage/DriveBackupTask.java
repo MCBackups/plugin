@@ -77,7 +77,7 @@ public class DriveBackupTask extends BackupTask {
         uploader.setDirectUploadEnabled(false);
         uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE * 40);
         uploader.setProgressListener(u -> {
-            MCBackups.getInstance().getLogger().info("Uploaded " + (int) (u.getProgress() * 100) + "%");
+            MCBackups.getInstance().getLogger().info("Google Drive Backup: " + (int) (u.getProgress() * 100) + "%");
 
             if(u.getProgress() == 1.0) {
                 MCBackups.getInstance().getLogger().info("Upload complete!");

@@ -45,7 +45,35 @@ public class SettingsConfig extends ConfigCreator {
     @Path(id = "backup.provider.googledrive.refresh-token")
     public static String BACKUP_PROVIDER_GOOGLEDRIVE_REFRESH_TOKEN = "this-will-automatically-generate";
 
+    @Path(id = "backup.provider.sftp.enabled")
+    public static boolean BACKUP_PROVIDER_SFTP_ENABLED = false;
 
+    @Path(id = "backup.provider.sftp.host")
+    public static String BACKUP_PROVIDER_SFTP_HOST = "sftp.example.com";
+
+    @Path(id = "backup.provider.sftp.port")
+    public static int BACKUP_PROVIDER_SFTP_PORT = 22;
+
+    @Path(id = "backup.provider.sftp.auth.username")
+    public static String BACKUP_PROVIDER_SFTP_USERNAME = "username";
+
+    @Path(id = "backup.provider.sftp.auth.password.enabled")
+    public static boolean BACKUP_PROVIDER_SFTP_AUTH_PASSWORD_ENABLED = true;
+
+    @Path(id = "backup.provider.sftp.auth.password.password")
+    public static String BACKUP_PROVIDER_SFTP_AUTH_PASSWORD = "password";
+
+    @Path(id = "backup.provider.sftp.auth.private-key.enabled")
+    public static boolean BACKUP_PROVIDER_SFTP_PRIVATE_KEY_ENABLED = false;
+
+    @Path(id = "backup.provider.sftp.auth.private-key.path")
+    public static String BACKUP_PROVIDER_SFTP_AUTH_PRIVATE_KEY_PATH = "sftp/id_ed25519";
+
+    @Path(id = "backup.provider.sftp.auth.private-key.passphrase")
+    public static String BACKUP_PROVIDER_SFTP_AUTH_PRIVATE_KEY_PASSPHRASE = "";
+
+    @Path(id = "backup.provider.sftp.remote-dir")
+    public static String BACKUP_PROVIDER_SFTP_REMOTE_DIR = "/backups";
 
     public SettingsConfig(JavaPlugin plugin) {
         super(plugin, "settings.yml");

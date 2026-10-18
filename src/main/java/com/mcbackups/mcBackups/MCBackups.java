@@ -1,6 +1,7 @@
 package com.mcbackups.mcBackups;
 
 import co.aikar.commands.PaperCommandManager;
+import com.mcbackups.mcBackups.storage.SFTPBackupTask;
 import lombok.Getter;
 import com.mcbackups.mcBackups.commands.MCBackupsCommand;
 import com.mcbackups.mcBackups.configs.LanguageConfig;
@@ -45,6 +46,10 @@ public final class MCBackups extends JavaPlugin {
 
             if(SettingsConfig.BACKUP_PROVIDER_MCBACKUPS_ENABLED) {
                 backupTask = new MCBackupsCloudTask();
+            }
+
+            if(SettingsConfig.BACKUP_PROVIDER_SFTP_ENABLED) {
+                backupTask = new SFTPBackupTask();
             }
 
             if(backupTask == null) {
