@@ -75,7 +75,7 @@ public class DriveBackupTask extends BackupTask {
             throw new RuntimeException(e);
         }
 
-        createZipArchive(foldersToBackup, zip);
+        createZipArchive(zip);
 
         File meta = new File().setName(zip.getFileName().toString()).setParents(List.of(findOrCreateFolder()));
         Drive.Files.Create create = drive.files().create(meta, new FileContent("application/zip", zip.toFile()))

@@ -30,17 +30,47 @@ public abstract class BackupTask {
     public final List<Path> foldersToBackup = new ArrayList<>();
     public final List<Path> foldersToExclude = new ArrayList<>();
 
-    public File createZipArchive(List<Path> sourceDirs, Path zipFile) {
+    public File createZipArchive(Path zipFile) {
 
         Path zipAbsolute = zipFile.toAbsolutePath();
+        Path serverRoot = MCBackup.getInstance().getServer().getWorldContainer().toPath().toAbsolutePath().normalize();
+
+        foldersToBackup.clear();
+        foldersToExclude.clear();
+
+        for (String folderName : new ArrayList<>(SettingsConfig.BACKUP_FOLDERS)) {
+            Path folderPath = serverRoot.resolve(folderName).normalize();
+            if (Files.exists(folderPath)) {
+                foldersToBackup.add(folderPath);
+            } else {
+                MCBackup.getInstance().getLogger().warning("Folder " + folderName + " does not exist and will be skipped.");
+            }
+        }
+
+        for (String folderName : new ArrayList<>(SettingsConfig.BACKUP_IGNORED_FOLDERS)) {
+            Path folderPath = serverRoot.resolve(folderName).normalize();
+            if (Files.exists(folderPath)) {
+                foldersToExclude.add(folderPath);
+            } else {
+                MCBackup.getInstance().getLogger().warning("Folder " + folderName + " does not exist.");
+            }
+        }
 
         try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipFile))) {
             zos.setLevel(Deflater.BEST_SPEED);
 
-            for (Path sourceDir : sourceDirs) {
-                Path base = sourceDir.toAbsolutePath().getParent();
+            for (Path sourceDir : foldersToBackup) {
+                Path base = sourceDir.getParent();
 
                 Files.walkFileTree(sourceDir, new SimpleFileVisitor<>() {
+                    @Override
+                    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                        if (foldersToExclude.contains(dir.toAbsolutePath().normalize())) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                         if (file.getFileName().toString().equals("session.lock") || file.toAbsolutePath().equals(zipAbsolute)) {
@@ -57,43 +87,16 @@ public abstract class BackupTask {
 
                         return FileVisitResult.CONTINUE;
                     }
+
+                    @Override
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                        MCBackup.getInstance().getLogger().warning("Skipping unreadable file " + file + ": " + exc.getMessage());
+                        return FileVisitResult.CONTINUE;
+                    }
                 });
             }
 
-
-            List<String> folderNamesToBackup = new ArrayList<>(SettingsConfig.BACKUP_FOLDERS);
-            List<String> folderNamesToExclude = new ArrayList<>(SettingsConfig.BACKUP_IGNORED_FOLDERS);
-
-
-            for (String folderName : folderNamesToBackup) {
-                Path serverRoot = MCBackup.getInstance().getServer().getWorldContainer().toPath().toAbsolutePath().normalize();
-                Path folderPath = serverRoot.resolve(folderName);
-                if (Files.exists(folderPath)) {
-                    foldersToBackup.add(folderPath);
-                } else {
-                    MCBackup.getInstance().getLogger().warning("Folder " + folderName + " does not exist and will be skipped.");
-                }
-            }
-
-            for(String folderName : folderNamesToExclude) {
-                Path serverRoot = MCBackup.getInstance().getServer().getWorldContainer().toPath().toAbsolutePath().normalize();
-                Path folderPath = serverRoot.resolve(folderName);
-                if (Files.exists(folderPath)) {
-                    foldersToExclude.add(folderPath);
-                } else {
-                    MCBackup.getInstance().getLogger().warning("Folder " + folderName + " does not exist.");
-                }
-            }
-
-
-            Path zip = MCBackup.getInstance().getDataFolder().toPath().resolve("backups/" + zipArchiveName);
-            try {
-                Files.createDirectories(zip.getParent());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            return zip.toFile();
+            return zipFile.toFile();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
