@@ -54,6 +54,6 @@ public final class MCBackup extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        getServer().getScheduler().cancelTasks(this);
     }
 }

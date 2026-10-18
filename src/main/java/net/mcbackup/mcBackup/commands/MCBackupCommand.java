@@ -4,15 +4,13 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.mcbackup.mcBackup.MCBackup;
+import net.mcbackup.mcBackup.authentication.DriveAuthentication;
 import net.mcbackup.mcBackup.configs.LanguageConfig;
 import net.mcbackup.mcBackup.configs.SettingsConfig;
-import net.mcbackup.mcBackup.authentication.DriveAuthentication;
-import net.mcbackup.mcBackup.storage.DriveBackupTask;
 import org.bukkit.command.CommandSender;
 import services.plasma.pLibraries.util.CC;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 @CommandAlias("mcbackup|backup")
 public class MCBackupCommand extends BaseCommand {
@@ -33,9 +31,9 @@ public class MCBackupCommand extends BaseCommand {
         sender.sendMessage(CC.translate(LanguageConfig.COMMANDS_MCBACKUP_RELOADED));
     }
 
-    @Subcommand("auth")
+    @Subcommand("drive auth")
     @CommandPermission("mcbackup.command.mcbackup.auth")
-    @Description("Authenticate your MCBackup account")
+    @Description("Authenticate your Google Drive account")
     public void auth(CommandSender sender) {
         new DriveAuthentication().authenticate(sender);
     }
@@ -49,9 +47,9 @@ public class MCBackupCommand extends BaseCommand {
         MCBackup.getInstance().getServer().getScheduler().runTaskAsynchronously(MCBackup.getInstance(), () -> {
 
             try {
-                DriveBackupTask backupTask = new DriveBackupTask();
-                backupTask.uploadBackup();
-            } catch (GeneralSecurityException | IOException e) {
+                MCBackup.getBackupTask().uploadBackup();
+            } catch (IOException e) {
+                sender.sendMessage(CC.translateComponent("&cThere aws an error while creating the backup! Check console for more information."));
                 throw new RuntimeException(e);
             }
 

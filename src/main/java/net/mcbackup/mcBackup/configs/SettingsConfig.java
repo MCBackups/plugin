@@ -4,7 +4,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import services.plasma.pLibraries.util.config.creator.ConfigCreator;
 import services.plasma.pLibraries.util.config.creator.annotation.Path;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
