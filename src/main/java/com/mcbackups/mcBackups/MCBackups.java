@@ -1,21 +1,21 @@
-package net.mcbackup.mcBackup;
+package com.mcbackups.mcBackups;
 
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
-import net.mcbackup.mcBackup.commands.MCBackupCommand;
-import net.mcbackup.mcBackup.configs.LanguageConfig;
-import net.mcbackup.mcBackup.configs.SettingsConfig;
-import net.mcbackup.mcBackup.storage.BackupTask;
-import net.mcbackup.mcBackup.storage.DriveBackupTask;
-import net.mcbackup.mcBackup.storage.MCBackupCloudTask;
+import com.mcbackups.mcBackups.commands.MCBackupsCommand;
+import com.mcbackups.mcBackups.configs.LanguageConfig;
+import com.mcbackups.mcBackups.configs.SettingsConfig;
+import com.mcbackups.mcBackups.storage.BackupTask;
+import com.mcbackups.mcBackups.storage.DriveBackupTask;
+import com.mcbackups.mcBackups.storage.MCBackupsCloudTask;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-public final class MCBackup extends JavaPlugin {
-    @Getter public static MCBackup instance;
+public final class MCBackups extends JavaPlugin {
+    @Getter public static MCBackups instance;
     @Getter public static PaperCommandManager commandManager;
     @Getter public static BackupTask backupTask;
 
@@ -30,7 +30,7 @@ public final class MCBackup extends JavaPlugin {
         commandManager.enableUnstableAPI("help");
 
         Arrays.asList(
-                new MCBackupCommand()
+                new MCBackupsCommand()
         ).forEach(command -> commandManager.registerCommand(command, true));
 
         if(SettingsConfig.BACKUP_ENABLED) {
@@ -43,8 +43,8 @@ public final class MCBackup extends JavaPlugin {
                 }
             }
 
-            if(SettingsConfig.BACKUP_PROVIDER_MCBACKUP_ENABLED) {
-                backupTask = new MCBackupCloudTask();
+            if(SettingsConfig.BACKUP_PROVIDER_MCBACKUPS_ENABLED) {
+                backupTask = new MCBackupsCloudTask();
             }
 
             if(backupTask == null) {

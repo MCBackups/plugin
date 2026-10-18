@@ -1,9 +1,9 @@
-package net.mcbackup.mcBackup.authentication;
+package com.mcbackups.mcBackups.authentication;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.mcbackup.mcBackup.MCBackup;
-import net.mcbackup.mcBackup.configs.SettingsConfig;
+import com.mcbackups.mcBackups.MCBackups;
+import com.mcbackups.mcBackups.configs.SettingsConfig;
 import org.bukkit.command.CommandSender;
 import services.plasma.pLibraries.util.CC;
 
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DriveAuthentication {
+public class GoogleDriveAuthentication {
 
     public static final String CLIENT_ID = "201215840641-lc69ah0tq54ke9bn2i58oe9tk84p4r4u.apps.googleusercontent.com";
     public static final String CLIENT_SECRET = "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";
@@ -43,7 +43,7 @@ public class DriveAuthentication {
 
     private void schedulePoll(String deviceCode, long intervalSeconds, long expiresAt, CommandSender sender) {
 
-        MCBackup.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(MCBackup.getInstance(), () -> {
+        MCBackups.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(MCBackups.getInstance(), () -> {
             if (System.currentTimeMillis() > expiresAt) {
                sender.sendMessage(CC.translateComponent("&cDevice code expired... You'll need to authenticate again"));
                 return;

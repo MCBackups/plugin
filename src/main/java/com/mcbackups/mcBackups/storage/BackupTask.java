@@ -1,10 +1,10 @@
-package net.mcbackup.mcBackup.storage;
+package com.mcbackups.mcBackups.storage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.mcbackup.mcBackup.MCBackup;
-import net.mcbackup.mcBackup.configs.SettingsConfig;
+import com.mcbackups.mcBackups.MCBackups;
+import com.mcbackups.mcBackups.configs.SettingsConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +26,14 @@ public abstract class BackupTask {
 
     private String name;
 
-    public final String zipArchiveName = "MCBackup_" + System.currentTimeMillis() + ".zip";
+    public final String zipArchiveName = "MCBACKUPS_" + System.currentTimeMillis() + ".zip";
     public final List<Path> foldersToBackup = new ArrayList<>();
     public final List<Path> foldersToExclude = new ArrayList<>();
 
     public File createZipArchive(Path zipFile) {
 
         Path zipAbsolute = zipFile.toAbsolutePath();
-        Path serverRoot = MCBackup.getInstance().getServer().getWorldContainer().toPath().toAbsolutePath().normalize();
+        Path serverRoot = MCBackups.getInstance().getServer().getWorldContainer().toPath().toAbsolutePath().normalize();
 
         foldersToBackup.clear();
         foldersToExclude.clear();
@@ -43,7 +43,7 @@ public abstract class BackupTask {
             if (Files.exists(folderPath)) {
                 foldersToBackup.add(folderPath);
             } else {
-                MCBackup.getInstance().getLogger().warning("Folder " + folderName + " does not exist and will be skipped.");
+                MCBackups.getInstance().getLogger().warning("Folder " + folderName + " does not exist and will be skipped.");
             }
         }
 
@@ -52,7 +52,7 @@ public abstract class BackupTask {
             if (Files.exists(folderPath)) {
                 foldersToExclude.add(folderPath);
             } else {
-                MCBackup.getInstance().getLogger().warning("Folder " + folderName + " does not exist.");
+                MCBackups.getInstance().getLogger().warning("Folder " + folderName + " does not exist.");
             }
         }
 
@@ -90,7 +90,7 @@ public abstract class BackupTask {
 
                     @Override
                     public FileVisitResult visitFileFailed(Path file, IOException exc) {
-                        MCBackup.getInstance().getLogger().warning("Skipping unreadable file " + file + ": " + exc.getMessage());
+                        MCBackups.getInstance().getLogger().warning("Skipping unreadable file " + file + ": " + exc.getMessage());
                         return FileVisitResult.CONTINUE;
                     }
                 });

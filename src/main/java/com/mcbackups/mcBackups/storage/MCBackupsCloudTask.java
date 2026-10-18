@@ -1,9 +1,9 @@
-package net.mcbackup.mcBackup.storage;
+package com.mcbackups.mcBackups.storage;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.mcbackup.mcBackup.MCBackup;
-import net.mcbackup.mcBackup.configs.SettingsConfig;
+import com.mcbackups.mcBackups.MCBackups;
+import com.mcbackups.mcBackups.configs.SettingsConfig;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,19 +14,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 
-public class MCBackupCloudTask extends BackupTask {
+public class MCBackupsCloudTask extends BackupTask {
 
 
-    public MCBackupCloudTask() {
-        super("MCBackup Cloud");
+    public MCBackupsCloudTask() {
+        super("MCBackups Cloud");
     }
 
-    public final String MCBACKUP_CLOUD_URL = "https://api.mcbackup.net";
+    public final String MCBACKUPS_CLOUD_URL = "https://api.mcbackup.net";
 
     @Override
     public void uploadBackup() throws IOException {
 
-        Path zip = MCBackup.getInstance().getDataFolder().toPath().resolve("backups/" + zipArchiveName);
+        Path zip = MCBackups.getInstance().getDataFolder().toPath().resolve("backups/" + zipArchiveName);
         try {
             Files.createDirectories(zip.getParent());
         } catch (IOException e) {
@@ -35,11 +35,11 @@ public class MCBackupCloudTask extends BackupTask {
 
         createZipArchive(zip);
 
-        HttpRequest request = HttpRequest.newBuilder(URI.create(MCBACKUP_CLOUD_URL + "/backups"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(MCBACKUPS_CLOUD_URL + "/backups"))
                 .timeout(Duration.ofMinutes(30))
                 .header("Content-Type", "application/octet-stream")
                 .header("X-Backup-Name", zipArchiveName)
-                .header("Authorization", "Bearer " + SettingsConfig.BACKUP_PROVIDER_MCBACKUP_API_KEY)
+                .header("Authorization", "Bearer " + SettingsConfig.BACKUP_PROVIDER_MCBACKUPS_API_KEY)
                 .POST(HttpRequest.BodyPublishers.ofFile(zip))
                 .build();
 
@@ -58,7 +58,7 @@ public class MCBackupCloudTask extends BackupTask {
 
         if (response.statusCode() != 201) {
             String error = body.has("error") ? body.get("error").getAsString() : response.body();
-            MCBackup.getInstance().getLogger().severe("Upload failed (HTTP " + response.statusCode() + "): " + error);
+            MCBackups.getInstance().getLogger().severe("Upload failed (HTTP " + response.statusCode() + "): " + error);
         }
     }
 

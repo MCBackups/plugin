@@ -1,4 +1,4 @@
-package net.mcbackup.mcBackup.configs;
+package com.mcbackups.mcBackups.configs;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import services.plasma.pLibraries.util.config.creator.ConfigCreator;
@@ -34,10 +34,10 @@ public class SettingsConfig extends ConfigCreator {
     );
 
     @Path(id = "backup.provider.mcbackup.enabled")
-    public static boolean BACKUP_PROVIDER_MCBACKUP_ENABLED = true;
+    public static boolean BACKUP_PROVIDER_MCBACKUPS_ENABLED = true;
 
     @Path(id = "backup.provider.mcbackup.api-key")
-    public static String BACKUP_PROVIDER_MCBACKUP_API_KEY = "mcbkp_xxxxxxxxx";
+    public static String BACKUP_PROVIDER_MCBACKUPS_API_KEY = "mcbkp_xxxxxxxxx";
 
     @Path(id = "backup.provider.googledrive.enabled")
     public static boolean BACKUP_PROVIDER_GOOGLEDRIVE_ENABLED = false;

@@ -1,4 +1,4 @@
-package net.mcbackup.mcBackup.configs;
+package com.mcbackups.mcBackups.configs;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import services.plasma.pLibraries.util.config.creator.ConfigCreator;
@@ -9,7 +9,7 @@ public class LanguageConfig extends ConfigCreator {
     public static LanguageConfig INSTANCE;
 
     @Path(id = "commands.mcbackup.reloaded")
-    public static String COMMANDS_MCBACKUP_RELOADED = "&aMCBackup configuration files have been reloaded.";
+    public static String COMMANDS_MCBACKUPS_RELOADED = "&aMCBackups configuration files have been reloaded.";
 
 
     public LanguageConfig(JavaPlugin plugin) {

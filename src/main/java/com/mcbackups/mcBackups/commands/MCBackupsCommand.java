@@ -1,20 +1,20 @@
-package net.mcbackup.mcBackup.commands;
+package com.mcbackups.mcBackups.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
-import net.mcbackup.mcBackup.MCBackup;
-import net.mcbackup.mcBackup.authentication.DriveAuthentication;
-import net.mcbackup.mcBackup.configs.LanguageConfig;
-import net.mcbackup.mcBackup.configs.SettingsConfig;
-import net.mcbackup.mcBackup.storage.DriveBackupTask;
+import com.mcbackups.mcBackups.MCBackups;
+import com.mcbackups.mcBackups.authentication.GoogleDriveAuthentication;
+import com.mcbackups.mcBackups.configs.LanguageConfig;
+import com.mcbackups.mcBackups.configs.SettingsConfig;
+import com.mcbackups.mcBackups.storage.DriveBackupTask;
 import org.bukkit.command.CommandSender;
 import services.plasma.pLibraries.util.CC;
 
 import java.io.IOException;
 
 @CommandAlias("mcbackup|backup")
-public class MCBackupCommand extends BaseCommand {
+public class MCBackupsCommand extends BaseCommand {
 
     @HelpCommand
     @Default
@@ -24,20 +24,20 @@ public class MCBackupCommand extends BaseCommand {
 
     @Subcommand("reload")
     @CommandPermission("mcbackup.command.mcbackup.reload")
-    @Description("Reload all MCBackup configuration files")
+    @Description("Reload all MCBackups configuration files")
     public void reload(CommandSender sender) {
         LanguageConfig.INSTANCE.reload();
         SettingsConfig.INSTANCE.reload();
 
-        sender.sendMessage(CC.translate(LanguageConfig.COMMANDS_MCBACKUP_RELOADED));
+        sender.sendMessage(CC.translate(LanguageConfig.COMMANDS_MCBACKUPS_RELOADED));
     }
 
     @Subcommand("drive auth")
     @CommandPermission("mcbackup.command.mcbackup.auth")
     @Description("Authenticate your Google Drive account")
     public void auth(CommandSender sender) {
-        if(SettingsConfig.BACKUP_PROVIDER_GOOGLEDRIVE_ENABLED && MCBackup.getBackupTask() instanceof DriveBackupTask) {
-            new DriveAuthentication().authenticate(sender);
+        if(SettingsConfig.BACKUP_PROVIDER_GOOGLEDRIVE_ENABLED && MCBackups.getBackupTask() instanceof DriveBackupTask) {
+            new GoogleDriveAuthentication().authenticate(sender);
         } else {
             sender.sendMessage(CC.translate("&cGoogle Drive is not enabled in the config."));
         }
@@ -49,9 +49,9 @@ public class MCBackupCommand extends BaseCommand {
     @Description("Create a backup of the server")
     public void backup(CommandSender sender) {
 
-        MCBackup.getInstance().getServer().getScheduler().runTaskAsynchronously(MCBackup.getInstance(), () -> {
+        MCBackups.getInstance().getServer().getScheduler().runTaskAsynchronously(MCBackups.getInstance(), () -> {
 
-            if(MCBackup.getBackupTask() == null) {
+            if(MCBackups.getBackupTask() == null) {
                 sender.sendMessage(CC.translateComponent("&cNo backup provider is enabled in the config."));
                 return;
             }
@@ -62,7 +62,7 @@ public class MCBackupCommand extends BaseCommand {
             }
 
             try {
-                MCBackup.getBackupTask().uploadBackup();
+                MCBackups.getBackupTask().uploadBackup();
             } catch (IOException e) {
                 sender.sendMessage(CC.translateComponent("&cThere was an error while creating the backup! Check console for more information."));
                 throw new RuntimeException(e);

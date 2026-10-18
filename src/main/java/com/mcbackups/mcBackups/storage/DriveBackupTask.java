@@ -1,4 +1,4 @@
-package net.mcbackup.mcBackup.storage;
+package com.mcbackups.mcBackups.storage;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
@@ -8,22 +8,15 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.UserCredentials;
-import net.mcbackup.mcBackup.MCBackup;
-import net.mcbackup.mcBackup.authentication.DriveAuthentication;
-import net.mcbackup.mcBackup.configs.SettingsConfig;
+import com.mcbackups.mcBackups.MCBackups;
+import com.mcbackups.mcBackups.authentication.GoogleDriveAuthentication;
+import com.mcbackups.mcBackups.configs.SettingsConfig;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public class DriveBackupTask extends BackupTask {
     public Drive drive = buildDrive();
@@ -39,8 +32,8 @@ public class DriveBackupTask extends BackupTask {
         }
 
         UserCredentials creds = UserCredentials.newBuilder()
-                .setClientId(DriveAuthentication.CLIENT_ID)
-                .setClientSecret(DriveAuthentication.CLIENT_SECRET)
+                .setClientId(GoogleDriveAuthentication.CLIENT_ID)
+                .setClientSecret(GoogleDriveAuthentication.CLIENT_SECRET)
                 .setRefreshToken(refreshToken)
                 .build();
 
@@ -68,7 +61,7 @@ public class DriveBackupTask extends BackupTask {
     @Override
     public void uploadBackup() throws IOException {
 
-        Path zip = MCBackup.getInstance().getDataFolder().toPath().resolve("backups/" + zipArchiveName);
+        Path zip = MCBackups.getInstance().getDataFolder().toPath().resolve("backups/" + zipArchiveName);
         try {
             Files.createDirectories(zip.getParent());
         } catch (IOException e) {
@@ -84,10 +77,10 @@ public class DriveBackupTask extends BackupTask {
         uploader.setDirectUploadEnabled(false);
         uploader.setChunkSize(MediaHttpUploader.MINIMUM_CHUNK_SIZE * 40);
         uploader.setProgressListener(u -> {
-            MCBackup.getInstance().getLogger().info("Uploaded " + (int) (u.getProgress() * 100) + "%");
+            MCBackups.getInstance().getLogger().info("Uploaded " + (int) (u.getProgress() * 100) + "%");
 
             if(u.getProgress() == 1.0) {
-                MCBackup.getInstance().getLogger().info("Upload complete!");
+                MCBackups.getInstance().getLogger().info("Upload complete!");
                 deleteZipArchive(zip);
             }
 
